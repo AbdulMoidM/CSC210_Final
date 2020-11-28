@@ -18,3 +18,8 @@ app.listen(process.env.PORT || 3000, function() {
 app.get("/", function(req, res) {
   res.render("home");
 });
+app.get("/register", function(req, res) { //THIS GOES INTO APP.JS
+  res.render("register", {
+    errorString: ""
+  });
+});
