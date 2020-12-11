@@ -29,6 +29,11 @@ const userSchema = new mongoose.Schema({
     type: secretSchema
   }]
 });
+
+
+const Secret = mongoose.model("Secret", secretSchema);
+const User = mongoose.model("User", userSchema);
+
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(findOrCreate);
 
@@ -42,9 +47,6 @@ passport.deserializeUser(function(id, done) {
     done(err, user);
   });
 });
-
-const Secret = mongoose.model("Secret", secretSchema);
-const User = mongoose.model("User", userSchema);
 
 app.set('view engine', 'ejs');
 
@@ -70,27 +72,5 @@ app.get("/", function(req, res) {
 app.get("/register", function(req, res) { //THIS GOES INTO APP.JS
   res.render("register", {
     errorString: ""
-  });
-});
-app.post("/login", function(req, res) {
-  const user = new User({
-    email: req.body.username,
-    password: req.body.password
-  });
-  req.login(user, function(err) {
-    if (err) {
-      console.log(err);
-
-    } else {
-
-      passport.authenticate("local",{
-        failureRedirect:"/login/failedlogin"
-      }
-      )(req, res, function() {
-
-        res.redirect("/secrets");
-
-      });
-    }
   });
 });
