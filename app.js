@@ -74,3 +74,22 @@ app.get("/register", function(req, res) { //THIS GOES INTO APP.JS
     errorString: ""
   });
 });
+
+app.post("/register", function(req, res) {
+  User.register({
+    username: req.body.username
+  }, req.body.password, function(err, user) {
+    if (err) {
+      res.render("register", {
+        errorString: err.message
+      });
+    } else {
+      passport.authenticate("local", {
+        failureRedirect: '/login'
+      })(req, res, function() {
+
+        res.redirect("/login");
+      });
+    }
+  });
+});
