@@ -74,7 +74,32 @@ app.get("/register", function(req, res) { //THIS GOES INTO APP.JS
     errorString: ""
   });
 });
+app.get("/logout", function(req, res) {
+  req.logout();
+  res.redirect("/");
+});
+app.post("/login", function(req, res) {
+  const user = new User({
+    email: req.body.username,
+    password: req.body.password
+  });
+  req.login(user, function(err) {
+    if (err) {
+      console.log(err);
 
+    } else {
+
+      passport.authenticate("local",{
+        failureRedirect:"/login/failedlogin"
+      }
+      })(req, res, function() {
+
+        res.redirect("/secrets");
+
+      });
+    }
+  });
+});
 app.post("/register", function(req, res) {
   User.register({
     username: req.body.username
