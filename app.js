@@ -114,3 +114,25 @@ app.post("/submit", function(req, res) {
     }
   });
 });
+app.get("/secrets", function(req, res) {
+  console.log(req);
+  if(req.isAuthenticated()){
+
+    User.find({
+      "secret": {
+        $ne: null
+      }
+    }, function(err, found) {
+      if (!err) {
+
+        res.render("secrets", {
+          userSecrets: found,
+          currentID: req.user._id
+        });
+      }
+    });
+  }else{
+    res.redirect("/login");
+  }
+
+});
