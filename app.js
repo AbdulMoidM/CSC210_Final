@@ -178,4 +178,16 @@ app.get("/secrets", function(req, res) {
     res.redirect("/login");
   }
 
+
+});
+
+app.get("/login", function(req, res) {
+  res.render("login", {
+    errorString: ""
+  });
+});
+app.get("/login/failedlogin", function(req, res) {
+  res.render("login", {
+    errorString: "Your username or password or invalid"
+  });
 });
