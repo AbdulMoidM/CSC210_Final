@@ -114,6 +114,24 @@ app.post("/submit", function(req, res) {
     }
   });
 });
+app.post("/delete", function(req, res) {
+  var userSecret = req.body.checkbox;
+  var userID = req.body.userID;
+  User.findOneAndUpdate({
+    _id: userID
+  }, {
+    $pull: {
+      secret: {
+        _id: userSecret
+      }
+    }
+  }, function(err) {
+    if (!err) {
+      res.redirect("/secrets");
+    }
+  })
+})
+
 app.get("/secrets", function(req, res) {
   console.log(req);
   if(req.isAuthenticated()){
