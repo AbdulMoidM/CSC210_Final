@@ -37,16 +37,6 @@ const User = mongoose.model("User", userSchema);
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(findOrCreate);
 
-passport.use(User.createStrategy());
-passport.serializeUser(function(user, done) {
-  done(null, user.id);
-});
-
-passport.deserializeUser(function(id, done) {
-  User.findById(id, function(err, user) {
-    done(err, user);
-  });
-});
 
 app.set('view engine', 'ejs');
 
@@ -62,6 +52,16 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+passport.use(User.createStrategy());
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
 
 app.listen(process.env.PORT || 3000, function() {
   console.log("Server is up and running");
