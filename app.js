@@ -93,3 +93,24 @@ app.post("/register", function(req, res) {
     }
   });
 });
+
+app.get("/submit", function(req, res) {
+  res.render("submit");
+});
+app.post("/submit", function(req, res) {
+  var secret = req.body.secret;
+  var secrets = new Secret({
+    secretString: secret
+  });
+  secrets.save();
+  User.findById(req.user.id, function(err, found) {
+    if (!err) {
+      if (found) {
+
+        found.secret.push(secrets);
+        found.save();
+        res.redirect("/secrets");
+      }
+    }
+  });
+});
