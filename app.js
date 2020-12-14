@@ -12,7 +12,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
-mongoose.connect(process.env.MONGO_DATA);
+mongoose.connect("mongodb+srv://admin-msalman:July31@cluster0-3mq9u.mongodb.net/SecretDB");
 mongoose.set("useCreateIndex", true);
 const secretSchema = new mongoose.Schema({
   secretString: String
