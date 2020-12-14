@@ -30,12 +30,12 @@ const userSchema = new mongoose.Schema({
   }]
 });
 
+userSchema.plugin(passportLocalMongoose);
+userSchema.plugin(findOrCreate);
 
 const Secret = mongoose.model("Secret", secretSchema);
 const User = mongoose.model("User", userSchema);
 
-userSchema.plugin(passportLocalMongoose);
-userSchema.plugin(findOrCreate);
 
 
 app.set('view engine', 'ejs');
@@ -89,9 +89,8 @@ app.post("/login", function(req, res) {
 
     } else {
 
-      passport.authenticate("local",{
-        failureRedirect:"/login/failedlogin"
-      }
+      passport.authenticate("local", {
+        failureRedirect: '/login/failedlogin'
       })(req, res, function() {
 
         res.redirect("/secrets");
@@ -156,6 +155,43 @@ app.post("/delete", function(req, res) {
     }
   })
 })
+app.post("/update", function(req, res) {
+  var secretID = req.body.secretID;
+  var secret=req.body.secret;
+  console.log("asdasdasd",secret);
+  res.render("update", {
+    secret: secret,
+    secretID:secretID
+  });
+});
+app.post("/updateSecret", function(req, res) {
+
+  var secret=req.body.secret;
+  var id=req.body.secretID;
+  var secrets = new Secret({
+    secretString: secret
+  });
+  User.findOneAndUpdate({
+    _id: req.user.id
+  }, {
+    $pull: {
+      secret: {
+        _id: id
+      }
+    }
+  }, function(err,found) {
+    console.log(found);
+    if (!err) {
+      found.secret.push(secrets);
+      found.save().then(()=>{
+          res.redirect("/secrets");
+      })
+
+    }
+  })
+});
+
+
 
 app.get("/secrets", function(req, res) {
   console.log(req);
